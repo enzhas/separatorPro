@@ -225,6 +225,7 @@ def process_file(file_path):
 # Generate and Download PDF
 @app.route('/download-pdf')
 def download_pdf():
+    from flask import send_file
     class PDF(FPDF):
         def __init__(self, orientation='L', unit='mm', format='A3'):
             super().__init__(orientation, unit, format)
@@ -252,9 +253,9 @@ def download_pdf():
     ]
     
     # Column width settings
-    col_width = 33  # Standard column width for most columns
-    row_height = 18  # Standard row height
-    reason_col_width = 33  # Wider width for the 'Reason' column
+    col_width = 34  # Standard column width for most columns
+    row_height = 20  # Standard row height
+    reason_col_width = 34  # Wider width for the 'Reason' column
 
     # Add table headers
     for header in headers:
@@ -295,8 +296,10 @@ def download_pdf():
         pdf.ln() 
 
 
-    pdf.output('./static/results.pdf')
-    return redirect('/static/results.pdf')
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
+        pdf.output(temp_pdf.name)
+        temp_pdf.seek(0)
+        return send_file(temp_pdf.name, as_attachment=True, download_name="results.pdf")
 
 if __name__ == "__main__":
     app.run(debug=True, port=5001)
