@@ -52,6 +52,8 @@ def calc():
             A = Qg / v  # Cross-sectional area
             D = sqrt((4 * A) / pi)  # Separator diameter
 
+            V_gas = (Qg * 86400) / (P * 10.73 / T)
+
             # Calculate separator length for Vertical or Horizontal
             if separator_type == "Vertical":
                 length = V_liquid / (pi * (D / 2) ** 2)  # Length for vertical separator
@@ -70,7 +72,8 @@ def calc():
                 "velocity": f"{v:.3f}",
                 "area": f"{A:.2f}",
                 "diameter": f"{D:.2f}",
-                "length": f"{length:.2f}"
+                "length": f"{length:.2f}",
+                "volume_gas": f"{V_gas:.2f}"
             }
 
             return render_template('calc.html', results=results)
