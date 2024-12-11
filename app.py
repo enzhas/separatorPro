@@ -52,7 +52,7 @@ def calc():
             A = Qg / v  # Cross-sectional area
             D = sqrt((4 * A) / pi)  # Separator diameter
 
-            V_gas = (Qg * 86400) / (P * 10.73 / T)
+            V_gas = (Qg) / (P * 10.73 / T)
 
             # Calculate separator length for Vertical or Horizontal
             if separator_type == "Vertical":
