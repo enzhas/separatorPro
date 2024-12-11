@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three-Phase Separator Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            max-width: 1000px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        input, select, button {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        input:focus, select:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .results {
+            margin-top: 30px;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .results ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .results li {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        .results li:last-child {
+            border-bottom: none;
+        }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h2>Three-Phase Separator Calculator</h2>
+</header>
+
+<div class="container">
+    <form action="/calc" method="POST">
+        <label for="Qg">Gas Flow Rate (Qg, MMSCFD):</label>
+        <input type="number" step="0.01" name="Qg" id="Qg" required>
+
+        <label for="Qo">Oil Flow Rate (Qo, BOPD):</label>
+        <input type="number" step="0.01" name="Qo" id="Qo" required>
+
+        <label for="Qw">Water Flow Rate (Qw, BWPD):</label>
+        <input type="number" step="0.01" name="Qw" id="Qw" required>
+
+        <label for="P">Pressure (P, psia):</label>
+        <input type="number" step="0.01" name="P" id="P" required>
+
+        <label for="T">Temperature (T, °F):</label>
+        <input type="number" step="0.01" name="T" id="T" required>
+
+        <label for="Sg">Specific Gravity of Gas (Sg):</label>
+        <input type="number" step="0.01" name="Sg" id="Sg" required>
+
+        <label for="API">Oil API Gravity (°API):</label>
+        <input type="number" step="0.01" name="API" id="API" required>
+
+        <label for="SG_w">Specific Gravity of Water (SG_w):</label>
+        <input type="number" step="0.01" name="SG_w" id="SG_w" required>
+
+        <label for="retention_time">Retention Time (minutes):</label>
+        <input type="number" step="0.01" name="retention_time" id="retention_time" required>
+
+        <label for="separator_type">Separator Type:</label>
+        <select name="separator_type" id="separator_type">
+            <option value="Vertical">Vertical</option>
+            <option value="Horizontal">Horizontal</option>
+        </select>
+
+        <button type="submit">Calculate</button>
+    </form>
+
+    {% if results %}
+    <div class="results">
+        <h3>Results</h3>
+        <ul>
+            <li><strong>Gas Density:</strong> {{ results['density_gas'] }} lb/ft³</li>
+            <li><strong>Specific Gravity of Oil:</strong> {{ results['sg_oil'] }}</li>
+            <li><strong>Density of Oil:</strong> {{ results['density_oil'] }} lb/ft³</li>
+            <li><strong>Density of Water:</strong> {{ results['density_water'] }} lb/ft³</li>
+            <li><strong>Volume of Liquid:</strong> {{ results['volume_liquid'] }} ft³</li>
+            <li><strong>Droplet Velocity:</strong> {{ results['velocity'] }} ft/s</li>
+            <li><strong>Cross-sectional Area:</strong> {{ results['area'] }} ft²</li>
+            <li><strong>Separator Diameter:</strong> {{ results['diameter'] }} ft</li>
+            <li><strong>Separator Length:</strong> {{ results['length'] }} ft</li>
+        </ul>
+    </div>
+    {% endif %}
+</div>
+
+<footer>
+    <p>&copy; 2024 Three-Phase Separator Calculator. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

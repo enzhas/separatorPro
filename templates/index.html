@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three-Phase Separator Sizing Tool</title>
+    <link rel="stylesheet" href="/static/style.css"> <!-- Linking external CSS -->
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Three-Phase Separator Sizing Tool</h1>
+        </header>
+        <main>
+            <h2>Upload Your Data</h2>
+            <form action="/upload" method="post" enctype="multipart/form-data" class="upload-form">
+                <input type="file" name="file" id="file-input">
+                <button type="submit" class="btn">Analyze</button>
+            </form>
+            <h2>Calculator</h2>
+
+            <a href="/calc" class="calc" target="_blank">CALCULATOR</a>
+
+        </main>
+        <footer>
+            <p>&copy; 2024 Separator Tool | All Rights Reserved</p>
+        </footer>
+    </div>
+</body>
+</html>
