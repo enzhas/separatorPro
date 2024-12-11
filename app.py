@@ -50,7 +50,7 @@ def calc():
             rho_w = SG_w * density_constant  # Density of water
             rho_L = (Qo * rho_o + Qw * rho_w) / (Qo + Qw)  # Average liquid density
 
-            V_liquid = (Qo + Qw) * retention_time  # Volume of liquid
+            V_liquid = (Qo + Qw/ 5.615 * 86400) * retention_time  # Volume of liquid
             v = (droplet_size * (rho_L - rho_g) * g) / (18 * mu_g)  # Droplet velocity
             A = Qg / v  # Cross-sectional area
             # D = sqrt((4 * A) / pi)  # Separator diameter
@@ -62,12 +62,13 @@ def calc():
 
             # Calculate separator length for Vertical or Horizontal
             if separator_type == "Vertical":
-                length = V_liquid / (pi * (D / 2) ** 2)  # Length for vertical separator
+                length = V_liquid / ((D / 2))  # Length for vertical separator
             elif separator_type == "Horizontal":
-                length = V_liquid / (pi * (D / 2) ** 2)  # Length for horizontal separator
+                length = V_liquid / (D / 2)  # Length for horizontal separator
             else:
                 raise ValueError("Invalid separator type")
 
+            # print(V_liquid)
             # Results to display
             results = {
                 "density_gas": f"{rho_g:.2f}",
