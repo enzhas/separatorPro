@@ -4,6 +4,7 @@ import pandas as pd
 from werkzeug.utils import secure_filename
 from fpdf import FPDF
 from math import sqrt, pi
+import tempfile
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = './uploads'
@@ -88,21 +89,23 @@ def upload_file():
     if file.filename == '':
         return "No selected file!", 400
 
-    filename = secure_filename(file.filename)
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    file.save(file_path)
+    # Use a temporary directory for file uploads
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        file_path = os.path.join(tmpdirname, secure_filename(file.filename))
+        file.save(file_path)
 
-    # Process the file
-    try:
-        result = process_file(file_path)
-        global latest_results
-        latest_results = result
-    except KeyError as e:
-        return f"Error: Missing expected column(s): {str(e)} in the file.", 400
-    except Exception as e:
-        return f"Error processing file: {str(e)}", 400
+        try:
+            result = process_file(file_path)
+            global latest_results
+            latest_results = result
+        except KeyError as e:
+            return f"Error: Missing expected column(s): {str(e)} in the file.", 400
+        except ValueError as e:
+            return f"Error: {str(e)}", 400
+        except Exception as e:
+            return f"Error processing file: {str(e)}", 400
 
-    return render_template('result.html', result=result)
+        return render_template('result.html', result=result)
 
 # Process the uploaded file and return recommendations
 def process_file(file_path):
