@@ -31,6 +31,9 @@ def calc():
             Sg = float(request.form['Sg'])  # Specific gravity of gas
             API = float(request.form['API'])  # Oil API gravity
             SG_w = float(request.form['SG_w'])  # Specific gravity of water
+            Z = float(request.form['Z'])  # Gas compressibility factor
+            C_D = float(request.form['C_D'])  # Drag coefficient
+            d_m = float(request.form['d_m'])  # Mean droplet size (in feet)
             retention_time = float(request.form['retention_time']) * 60  # Convert minutes to seconds
             separator_type = request.form['separator_type']  # Vertical or Horizontal
 
@@ -50,7 +53,10 @@ def calc():
             V_liquid = (Qo + Qw) * retention_time  # Volume of liquid
             v = (droplet_size * (rho_L - rho_g) * g) / (18 * mu_g)  # Droplet velocity
             A = Qg / v  # Cross-sectional area
-            D = sqrt((4 * A) / pi)  # Separator diameter
+            # D = sqrt((4 * A) / pi)  # Separator diameter
+            # Separator diameter calculation using the given formula
+            d_squared = 5040 * (T * Z * Qg / P) * ((rho_g / (rho_L - rho_g)) * (C_D / d_m))**0.5
+            D = d_squared**0.5  # Diameter
 
             V_gas = (Qg) / (P * 10.73 / T)
 

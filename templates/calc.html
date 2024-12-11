@@ -92,42 +92,52 @@
 </header>
 
 <div class="container">
-    <form action="/calc" method="POST">
-        <label for="Qg">Gas Flow Rate (Qg, MMSCFD):</label>
-        <input type="number" step="0.01" name="Qg" id="Qg" required>
+        <form action="/calc" method="POST">
+            <label for="Qg">Gas Flow Rate (Qg, MMSCFD):</label>
+            <input type="number" step="0.01" name="Qg" id="Qg" required>
 
-        <label for="Qo">Oil Flow Rate (Qo, BOPD):</label>
-        <input type="number" step="0.01" name="Qo" id="Qo" required>
+            <label for="Qo">Oil Flow Rate (Qo, BOPD):</label>
+            <input type="number" step="0.01" name="Qo" id="Qo" required>
 
-        <label for="Qw">Water Flow Rate (Qw, BWPD):</label>
-        <input type="number" step="0.01" name="Qw" id="Qw" required>
+            <label for="Qw">Water Flow Rate (Qw, BWPD):</label>
+            <input type="number" step="0.01" name="Qw" id="Qw" required>
 
-        <label for="P">Pressure (P, psia):</label>
-        <input type="number" step="0.01" name="P" id="P" required>
+            <label for="P">Pressure (P, psia):</label>
+            <input type="number" step="0.01" name="P" id="P" required>
 
-        <label for="T">Temperature (T, °F):</label>
-        <input type="number" step="0.01" name="T" id="T" required>
+            <label for="T">Temperature (T, °F):</label>
+            <input type="number" step="0.01" name="T" id="T" required>
 
-        <label for="Sg">Specific Gravity of Gas (Sg):</label>
-        <input type="number" step="0.01" name="Sg" id="Sg" required>
+            <label for="Sg">Specific Gravity of Gas (Sg):</label>
+            <input type="number" step="0.01" name="Sg" id="Sg" required>
 
-        <label for="API">Oil API Gravity (°API):</label>
-        <input type="number" step="0.01" name="API" id="API" required>
+            <label for="API">Oil API Gravity (°API):</label>
+            <input type="number" step="0.01" name="API" id="API" required>
 
-        <label for="SG_w">Specific Gravity of Water (SG_w):</label>
-        <input type="number" step="0.01" name="SG_w" id="SG_w" required>
+            <label for="SG_w">Specific Gravity of Water (SG_w):</label>
+            <input type="number" step="0.01" name="SG_w" id="SG_w" required>
 
-        <label for="retention_time">Retention Time (minutes):</label>
-        <input type="number" step="0.01" name="retention_time" id="retention_time" required>
+            <label for="Z">Gas Compressibility Factor (Z):</label>
+            <input type="number" step="0.01" name="Z" id="Z" required>
+        
+            <label for="C_D">Drag Coefficient (C_D):</label>
+            <input type="number" step="0.01" name="C_D" id="C_D" required>
+        
+            <label for="d_m">Mean Droplet Size (d_m, ft):</label>
+            <input type="number" step="0.0001" name="d_m" id="d_m" required>
+        
 
-        <label for="separator_type">Separator Type:</label>
-        <select name="separator_type" id="separator_type">
-            <option value="Vertical">Vertical</option>
-            <option value="Horizontal">Horizontal</option>
-        </select>
+            <label for="retention_time">Retention Time (minutes):</label>
+            <input type="number" step="0.01" name="retention_time" id="retention_time" required>
 
-        <button type="submit">Calculate</button>
-    </form>
+            <label for="separator_type">Separator Type:</label>
+            <select name="separator_type" id="separator_type">
+                <option value="Vertical">Vertical</option>
+                <option value="Horizontal">Horizontal</option>
+            </select>
+
+            <button type="submit">Calculate</button>
+        </form>
 
     {% if results %}
     <div class="results">
