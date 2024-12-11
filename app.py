@@ -64,7 +64,7 @@ def calc():
             if separator_type == "Vertical":
                 length = V_liquid / (pi * (D / 2) ** 2)  # Length for vertical separator
             elif separator_type == "Horizontal":
-                length = V_liquid / (D / 2)  # Length for horizontal separator
+                length = V_liquid / (pi * (D / 2) ** 2)  # Length for horizontal separator
             else:
                 raise ValueError("Invalid separator type")
 
