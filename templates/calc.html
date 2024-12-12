@@ -178,6 +178,7 @@
             {% if results['dLeff_retention'] %}
                 <li><strong>Effective Diameter (Retention):</strong> {{ results['dLeff_retention'] }} ft</li>
             {% endif %}
+            {% if results['Lss_liquid'] %}            
             <table border="1" style="width:100%; border-collapse: collapse; margin-top: 20px;">
                 <thead>
                     <tr>
@@ -227,7 +228,8 @@
                         </td>
                     </tr>
                 </tbody>
-            </table>            
+            </table>         
+            {% endif %}   
         </ul>
     </div>
     {% endif %}
