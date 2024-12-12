@@ -27,7 +27,7 @@ def calc():
             Qo = float(request.form['Qo']) 
             Qw = float(request.form['Qw'])  
             Po = float(request.form['P'])  # psia
-            To = float(request.form['T']) + 459.67  # Convert °F to °R
+            To = float(request.form['T'])  # Convert °F to °R
             Sg = float(request.form['Sg'])  # Specific gravity of gas
             SG_o = float(request.form['SG_o'])  # Specific gravity of Oil
             SG_w = float(request.form['SG_w'])  # Specific gravity of water
