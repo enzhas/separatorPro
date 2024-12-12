@@ -178,41 +178,56 @@
             {% if results['dLeff_retention'] %}
                 <li><strong>Effective Diameter (Retention):</strong> {{ results['dLeff_retention'] }} ft</li>
             {% endif %}
-            {% if results['Lss_liquid'] %}
-                <li><strong>Liquid Settling Length:</strong></li>
-                <ul>
-                    {% for value in results['Lss_liquid'] %}
-                        <li>{{ value }} ft</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-            {% if results['d'] %}
-    <li><strong>Diameter (d):</strong></li>
-    <ul>
-        {% for value in results['d'] %}
-            <li>{{ value }} ft</li>
-        {% endfor %}
-    </ul>
-{% endif %}
-
-{% if results['Leff'] %}
-    <li><strong>Effective Length (Leff):</strong></li>
-    <ul>
-        {% for value in results['Leff'] %}
-            <li>{{ value }} ft</li>
-        {% endfor %}
-    </ul>
-{% endif %}
-
-{% if results['SR_liquid'] %}
-    <li><strong>Slenderness Ratio (Liquid):</strong></li>
-    <ul>
-        {% for value in results['SR_liquid'] %}
-            <li>{{ value }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
-
+            <table border="1" style="width:100%; border-collapse: collapse; margin-top: 20px;">
+                <thead>
+                    <tr>
+                        <th style="width: 25%;">Liquid Settling Length:</th>
+                        <th style="width: 25%;">Diameter (d):</th>
+                        <th style="width: 25%;">Effective Length (Leff):</th>
+                        <th style="width: 25%;">Slenderness Ratio (Liquid):</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            {% if results['Lss_liquid'] %}
+                                <ul>
+                                    {% for value in results['Lss_liquid'] %}
+                                        <li>{{ value|round(8) }} ft</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if results['d'] %}
+                                <ul>
+                                    {% for value in results['d'] %}
+                                        <li>{{ value|round(8) }} ft</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if results['Leff'] %}
+                                <ul>
+                                    {% for value in results['Leff'] %}
+                                        <li>{{ value|round(8)}} ft</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if results['SR_liquid'] %}
+                                <ul>
+                                    {% for value in results['SR_liquid'] %}
+                                        <li>{{ value|round(8) }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>            
         </ul>
     </div>
     {% endif %}
