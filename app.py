@@ -23,66 +23,123 @@ def calc():
     if request.method == 'POST':
         try:
             # Get input data from the form
-            Qg = float(request.form['Qg']) * 1_000_000 / 86400  # Convert MMSCFD to ft³/s
-            Qo = float(request.form['Qo']) * 5.615 / 86400  # Convert BOPD to ft³/s
-            Qw = float(request.form['Qw']) * 5.615 / 86400  # Convert BWPD to ft³/s
-            P = float(request.form['P'])  # psia
-            T = float(request.form['T']) + 459.67  # Convert °F to °R
+            Qg = float(request.form['Qg'])
+            Qo = float(request.form['Qo']) 
+            Qw = float(request.form['Qw'])  
+            Po = float(request.form['P'])  # psia
+            To = float(request.form['T']) + 459.67  # Convert °F to °R
             Sg = float(request.form['Sg'])  # Specific gravity of gas
-            API = float(request.form['API'])  # Oil API gravity
+            SG_o = float(request.form['SG_o'])  # Specific gravity of Oil
             SG_w = float(request.form['SG_w'])  # Specific gravity of water
             Z = float(request.form['Z'])  # Gas compressibility factor
-            C_D = float(request.form['C_D'])  # Drag coefficient
-            d_m = float(request.form['d_m'])  # Mean droplet size (in feet)
-            retention_time = float(request.form['retention_time']) * 60  # Convert minutes to seconds
+            mu = float(request.form['M']) # mu
+            # liquid_d_m = float(request.form['liquid_d_m']) # in micro
+            # water_d_m = float(request.form['water_d_m'])# in micro
+            # oil_d_m = float(request.form['oil_d_m'])# in micro
+            tr_o = float(request.form['tr_o'])
+            tr_w = float(request.form['tr_w'])
+            B = float(request.form['B'])
+            # retention_time = float(request.form['retention_time']) * 60  # Convert minutes to seconds
             separator_type = request.form['separator_type']  # Vertical or Horizontal
 
-            # Constants
-            droplet_size = 1.07e-7  # Droplet size removal in feet
-            g = 32.17  # Gravity constant (ft/s^2)
-            mu_g = 0.000012  # Gas viscosity (lb/ft-s)
-            density_constant = 62.4  # lb/ft³
+            # Convert temperature to Rankine
+            T = To + 459.67
 
-            # Calculations
-            rho_g = (28.97 * Sg * P) / (10.73 * T)  # Gas density
-            SG_o = 141.5 / (API + 131.5)  # Specific gravity of oil
-            rho_o = SG_o * density_constant  # Density of oil
-            rho_w = SG_w * density_constant  # Density of water
-            rho_L = (Qo * rho_o + Qw * rho_w) / (Qo + Qw)  # Average liquid density
+            # Convert retention times to seconds
+            tr_o_sec = tr_o * 60
+            tr_w_sec = tr_w * 60
 
-            V_liquid = (Qo + Qw/ 5.615 * 86400) * retention_time  # Volume of liquid
-            v = (droplet_size * (rho_L - rho_g) * g) / (18 * mu_g)  # Droplet velocity
-            A = Qg / v  # Cross-sectional area
-            # D = sqrt((4 * A) / pi)  # Separator diameter
-            # Separator diameter calculation using the given formula
-            d_squared = 5040 * (T * Z * Qg / P) * ((rho_g / (rho_L - rho_g)) * (C_D / d_m))**0.5
-            D = d_squared**0.5  # Diameter
+            # Calculate liquid density (lb/ft³)
+            liquid_density_pl = 62.4 * (141.5 / (131.5 + SG_o))
 
-            V_gas = (Qg) / (P * 10.73 / T)
+            # Calculate gas density (lb/ft³)
+            gas_density_pg = (2.7 * Sg * Po) / (T * Z)
 
-            # Calculate separator length for Vertical or Horizontal
-            if separator_type == "Vertical":
-                length = V_liquid / ((D / 2))  # Length for vertical separator
-            elif separator_type == "Horizontal":
-                length = V_liquid / (D / 2)  # Length for horizontal separator
-            else:
-                raise ValueError("Invalid separator type")
+            # Initialize constants
+            Cd = 0.25
+            liquid_d_m = 100  # droplet diameter for liquid in microns
+            water_d_m = 500
+            oil_d_m = 200
 
-            # print(V_liquid)
-            # Results to display
-            results = {
-                "density_gas": f"{rho_g:.2f}",
-                "sg_oil": f"{SG_o:.3f}",
-                "density_oil": f"{rho_o:.2f}",
-                "density_water": f"{rho_w:.2f}",
-                "volume_liquid": f"{V_liquid:.2f}",
-                "velocity": f"{v:.3f}",
-                "area": f"{A:.2f}",
-                "diameter": f"{D:.2f}",
-                "length": f"{length:.2f}",
-                "volume_gas": f"{V_gas:.2f}"
-            }
+            # Settling velocity and drag coefficient iteration
+            for _ in range(5):
+                Vt = 0.0119 * ((liquid_density_pl - gas_density_pg) / gas_density_pg * liquid_d_m / Cd)
+                Re = 0.0049 * (gas_density_pg * liquid_d_m * Vt) / mu
+                Cd = 24 / Re + 3 / (Re ** 0.5) + 0.34
 
+            # Gravity difference for oil-water separation
+            dSG = SG_w - (141.5 / (131.5 + SG_o))
+
+            if separator_type.lower() == "vertical":
+                D_l = 5040 * (T * Z * Qg / Po) * ((gas_density_pg / (liquid_density_pl - gas_density_pg)) * (0.25 / liquid_d_m)) if 5040 * (T * Z * Qg / Po) * ((gas_density_pg / (liquid_density_pl - gas_density_pg)) * (0.25 / liquid_d_m)) > 0 else 0 ** 0.25
+                D_o = 6690 * (Qo * mu) / (dSG * (oil_d_m ** 2)) if 6690 * (Qo * mu) / (dSG * (oil_d_m ** 2)) > 0 else 0 ** 0.5
+                D_w = 6690 * (Qo * mu) / (dSG * (water_d_m ** 2)) if 6690 * (Qo * mu) / (dSG * (water_d_m ** 2)) > 0 else 0 ** 0.5
+                D = max(D_l, D_o, D_w)
+                H = (tr_o_sec * Qo + tr_w_sec * Qw) / (0.12 * D ** 2)  # Height for retention
+                if D <= 36:
+                    Lss = (H + 76) / 12
+                else:
+                    Lss = (H + D + 40) / 12
+                SR = (12 * Lss) / D  # Slenderness Ratio
+
+                results = {
+                    "diameter": round(D, 2),
+                    "height": round(H, 2),
+                    "length": round(Lss, 2),
+                    "slenderness_ratio": round(SR, 2),
+                    "liquid_density": round(liquid_density_pl, 2),
+                    "gas_density": round(gas_density_pg, 2),
+                    "settling_velocity": round(Vt, 2),
+                    "Reynolds_number": round(Re, 2),
+                    "drag_coefficient": round(Cd, 2)
+                }
+
+            elif separator_type.lower() == "horizontal":
+                H = (1.28 * (10 ** (-3)) * (tr_o_sec * dSG * (water_d_m ** 2))) / mu # Max oil pad thickness
+                AA = 0.5 * Qw * tr_w / (tr_o_sec * Qo + tr_w_sec * Qw)
+
+                D = H / B
+            
+                # Step 6: Calculate dLeff based on gas capacity constraint
+                dLeff = 420 * (T * Z * Qg / Po) * (((gas_density_pg / (liquid_density_pl - gas_density_pg)) * (Cd / liquid_d_m)) ** 0.5)
+
+                # Step 7: Calculate dLeff based on oil and water retention time constraints
+                d2Leff_retention = 1.42 * (Qw * tr_w_sec + Qo * tr_o_sec)
+
+                dLeff_retention = (d2Leff_retention ** 0.5) / 12
+
+                d = []
+                d.append(dLeff / 2)
+                Leff = []
+                Leff.append(d2Leff_retention / (d[0] / 2))
+                # Lss_gas = []
+                # Lss_gas.append(Leff[0] + d[0] / 12)
+                Lss_liquid = []
+                Lss_liquid.append(4/3 * Leff[0])
+                # SR_gas = []
+                SR_liquid = []
+                SR_liquid.append((12 * Lss_liquid[0])/d[0])
+
+
+                for i in range(1, 9):
+                    d.append(d[-1] + 15)
+                    Leff.append(d2Leff_retention / (d[i] / 2))
+                    # Lss_gas.append(Leff[i] + d[i] / 12)
+                    Lss_liquid.append(4/3 * Leff[i])
+
+                    SR_liquid.append((12 * Lss_liquid[i])/d[i])
+
+
+
+                results = {
+                    "diameter": round(D, 2),
+                    "dLeff_gas": round(dLeff, 2),
+                    "dLeff_retention": round(dLeff_retention, 2),
+                    "Lss_liquid": Lss_liquid,
+                    "d": d,
+                    "Leff": Leff,
+                    "SR_liquid": SR_liquid
+                }
             return render_template('calc.html', results=results)
 
         except ValueError:

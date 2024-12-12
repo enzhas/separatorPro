@@ -92,67 +92,127 @@
 </header>
 
 <div class="container">
-        <form action="/calc" method="POST">
-            <label for="Qg">Gas Flow Rate (Qg, MMSCFD):</label>
-            <input type="number" step="0.01" name="Qg" id="Qg" required>
+    <form action="/calc" method="POST">
+        <label for="Qg">Gas Flow Rate (Qg, MMSCFD):</label>
+        <input type="number" step="0.01" name="Qg" id="Qg" required>
 
-            <label for="Qo">Oil Flow Rate (Qo, BOPD):</label>
-            <input type="number" step="0.01" name="Qo" id="Qo" required>
+        <label for="Qo">Oil Flow Rate (Qo, BOPD):</label>
+        <input type="number" step="0.01" name="Qo" id="Qo" required>
 
-            <label for="Qw">Water Flow Rate (Qw, BWPD):</label>
-            <input type="number" step="0.01" name="Qw" id="Qw" required>
+        <label for="Qw">Water Flow Rate (Qw, BWPD):</label>
+        <input type="number" step="0.01" name="Qw" id="Qw" required>
 
-            <label for="P">Pressure (P, psia):</label>
-            <input type="number" step="0.01" name="P" id="P" required>
+        <label for="P">Pressure (P, psia):</label>
+        <input type="number" step="0.01" name="P" id="P" required>
 
-            <label for="T">Temperature (T, °F):</label>
-            <input type="number" step="0.01" name="T" id="T" required>
+        <label for="T">Temperature (T, °F):</label>
+        <input type="number" step="0.01" name="T" id="T" required>
 
-            <label for="Sg">Specific Gravity of Gas (Sg):</label>
-            <input type="number" step="0.01" name="Sg" id="Sg" required>
+        <label for="Sg">Specific Gravity of Gas (Sg):</label>
+        <input type="number" step="0.01" name="Sg" id="Sg" required>
 
-            <label for="API">Oil API Gravity (°API):</label>
-            <input type="number" step="0.01" name="API" id="API" required>
+        <label for="SG_o">Specific Gravity of Oil (SG_o):</label>
+        <input type="number" step="0.01" name="SG_o" id="SG_o" required>
 
-            <label for="SG_w">Specific Gravity of Water (SG_w):</label>
-            <input type="number" step="0.01" name="SG_w" id="SG_w" required>
+        <label for="SG_w">Specific Gravity of Water (SG_w):</label>
+        <input type="number" step="0.01" name="SG_w" id="SG_w" required>
 
-            <label for="Z">Gas Compressibility Factor (Z):</label>
-            <input type="number" step="0.01" name="Z" id="Z" required>
-        
-            <label for="C_D">Drag Coefficient (C_D):</label>
-            <input type="number" step="0.01" name="C_D" id="C_D" required>
-        
-            <label for="d_m">Mean Droplet Size (d_m, ft):</label>
-            <input type="number" step="0.0001" name="d_m" id="d_m" required>
-        
+        <label for="Z">Gas Compressibility Factor (Z):</label>
+        <input type="number" step="0.01" name="Z" id="Z" required>
 
-            <label for="retention_time">Retention Time (minutes):</label>
-            <input type="number" step="0.01" name="retention_time" id="retention_time" required>
+        <label for="M">Viscosity (μ):</label>
+        <input type="number" step="0.01" name="M" id="M" required>
 
-            <label for="separator_type">Separator Type:</label>
-            <select name="separator_type" id="separator_type">
-                <option value="Vertical">Vertical</option>
-                <option value="Horizontal">Horizontal</option>
-            </select>
+        <label for="tr_o">Retention Time for Oil (minutes):</label>
+        <input type="number" step="0.01" name="tr_o" id="tr_o" required>
 
-            <button type="submit">Calculate</button>
-        </form>
+        <label for="tr_w">Retention Time for Water (minutes):</label>
+        <input type="number" step="0.01" name="tr_w" id="tr_w" required>
+
+        <label for="B">Separator Width (B):</label>
+        <input type="number" step="0.01" name="B" id="B" required>
+
+        <label for="separator_type">Separator Type:</label>
+        <select name="separator_type" id="separator_type">
+            <option value="Vertical">Vertical</option>
+            <option value="Horizontal">Horizontal</option>
+        </select>
+
+        <button type="submit">Calculate</button>
+    </form>
 
     {% if results %}
     <div class="results">
         <h3>Results</h3>
         <ul>
-            <li><strong>Gas Density:</strong> {{ results['density_gas'] }} lb/ft³</li>
-            <li><strong>Specific Gravity of Oil:</strong> {{ results['sg_oil'] }}</li>
-            <li><strong>Density of Oil:</strong> {{ results['density_oil'] }} lb/ft³</li>
-            <li><strong>Density of Water:</strong> {{ results['density_water'] }} lb/ft³</li>
-            <li><strong>Volume of Liquid:</strong> {{ results['volume_liquid'] }} ft³</li>
-            <li><strong>Volume of Gas:</strong> {{ results['volume_gas'] }} ft³</li>
-            <li><strong>Droplet Velocity:</strong> {{ results['velocity'] }} ft/s</li>
-            <li><strong>Cross-sectional Area:</strong> {{ results['area'] }} ft²</li>
-            <li><strong>Separator Diameter:</strong> {{ results['diameter'] }} ft</li>
-            <li><strong>Separator Length:</strong> {{ results['length'] }} ft</li>
+            {% if results['diameter'] %}
+                <li><strong>Separator Diameter:</strong> {{ results['diameter'] }} ft</li>
+            {% endif %}
+            {% if results['height'] %}
+                <li><strong>Separator Height:</strong> {{ results['height'] }} ft</li>
+            {% endif %}
+            {% if results['length'] %}
+                <li><strong>Separator Length:</strong> {{ results['length'] }} ft</li>
+            {% endif %}
+            {% if results['slenderness_ratio'] %}
+                <li><strong>Slenderness Ratio:</strong> {{ results['slenderness_ratio'] }}</li>
+            {% endif %}
+            {% if results['liquid_density'] %}
+                <li><strong>Liquid Density:</strong> {{ results['liquid_density'] }} lb/ft³</li>
+            {% endif %}
+            {% if results['gas_density'] %}
+                <li><strong>Gas Density:</strong> {{ results['gas_density'] }} lb/ft³</li>
+            {% endif %}
+            {% if results['settling_velocity'] %}
+                <li><strong>Settling Velocity:</strong> {{ results['settling_velocity'] }} ft/s</li>
+            {% endif %}
+            {% if results['Reynolds_number'] %}
+                <li><strong>Reynolds Number:</strong> {{ results['Reynolds_number'] }}</li>
+            {% endif %}
+            {% if results['drag_coefficient'] %}
+                <li><strong>Drag Coefficient:</strong> {{ results['drag_coefficient'] }}</li>
+            {% endif %}
+            {% if results['dLeff_gas'] %}
+                <li><strong>Effective Diameter (Gas):</strong> {{ results['dLeff_gas'] }} ft</li>
+            {% endif %}
+            {% if results['dLeff_retention'] %}
+                <li><strong>Effective Diameter (Retention):</strong> {{ results['dLeff_retention'] }} ft</li>
+            {% endif %}
+            {% if results['Lss_liquid'] %}
+                <li><strong>Liquid Settling Length:</strong></li>
+                <ul>
+                    {% for value in results['Lss_liquid'] %}
+                        <li>{{ value }} ft</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {% if results['d'] %}
+    <li><strong>Diameter (d):</strong></li>
+    <ul>
+        {% for value in results['d'] %}
+            <li>{{ value }} ft</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if results['Leff'] %}
+    <li><strong>Effective Length (Leff):</strong></li>
+    <ul>
+        {% for value in results['Leff'] %}
+            <li>{{ value }} ft</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if results['SR_liquid'] %}
+    <li><strong>Slenderness Ratio (Liquid):</strong></li>
+    <ul>
+        {% for value in results['SR_liquid'] %}
+            <li>{{ value }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
         </ul>
     </div>
     {% endif %}
